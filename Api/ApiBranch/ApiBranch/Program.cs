@@ -13,14 +13,29 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//se inyecta la cadena de conexión
 builder.Services.AddDbContext<TestDbContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("connectionTest"));
 });
 
+//Se injecta la logica de negocio
 builder.Services.AddScoped<ICurrencyService,CurrencyService>();
 builder.Services.AddScoped<IBranchService, BranchService>();
 
+//Se injecta el AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+
+//Configuración de los cors
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("corsPolicy", app => {
+        app.AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
+
+});
+
 
 
 var app = builder.Build();
@@ -39,7 +54,9 @@ app.MapGet("/currency/list", async (
     IMapper _mapper
     ) =>
 {
+    //Obtiene la Lista
     List<CurrencyTest> lstCurrency = await _currencyServices.GetList();
+    //Mapea la lista para regresar el dato esperado
     List<CurrencyMapper> lstCurrencyMapper = _mapper.Map<List<CurrencyMapper>>(lstCurrency);
 
     if (lstCurrencyMapper.Count > 0)
@@ -59,7 +76,9 @@ app.MapGet("/branches/list", async (
     IMapper _mapper
     ) =>
 {
+    //Obtiene la Lista
     List<BranchTest> lstBranches = await _branchService.GetList();
+    //Mapea la lista para regresar el dato esperado
     List<BranchMapper> lstBranchesMapper = _mapper.Map<List<BranchMapper>>(lstBranches);
 
     if (lstBranchesMapper.Count > 0)
@@ -76,8 +95,10 @@ app.MapPost("/branches/add", async (
     IMapper _mapper
     ) =>
 {
+    //Mapea el objeto recibido para que sea posible guardarlo en la BD
     BranchTest branch = _mapper.Map<BranchTest>(model);
     BranchTest branchCreate = await _branchService.Add(branch);
+    //Mapea la lista para regresar el dato esperado
     BranchMapper branchResult = _mapper.Map<BranchMapper>(branchCreate);
 
     if (branchResult.IdBranch != 0)
@@ -95,12 +116,14 @@ app.MapPut("/branches/update/{idBranch}", async (
     IMapper _mapper
     ) =>
 {
+    //Busca la sucursal por ID
     BranchTest _encontrado = await _branchService.Get(idBranch);
 
     if (_encontrado is null) return Results.NotFound();
 
     BranchTest branch = _mapper.Map<BranchTest>(model);
 
+    //Mapea el objeto recibido para que sea posible guardarlo en la BD
     _encontrado.BranchAddress = branch.BranchAddress;
     _encontrado.BranchCode = branch.BranchCode;
     _encontrado.BranchDateCreation = branch.BranchDateCreation;
@@ -110,6 +133,7 @@ app.MapPut("/branches/update/{idBranch}", async (
     var result = await _branchService.Update(_encontrado);
 
     if (result)
+        //Mapea la lista para regresar el dato esperado
         return Results.Ok(_mapper.Map<BranchMapper>(_encontrado));
     else
         return Results.StatusCode(StatusCodes.Status500InternalServerError);
@@ -122,6 +146,7 @@ app.MapDelete("/branches/delete/{idBranch}", async (
     IBranchService _branchService
     ) =>
 {
+    //Busca la sucursal por ID
     BranchTest _encontrado = await _branchService.Get(idBranch);
 
     if (_encontrado is null) return Results.NotFound();
@@ -137,6 +162,8 @@ app.MapDelete("/branches/delete/{idBranch}", async (
 
 #endregion
 
+//Se agrega la configuración de los cors
+app.UseCors("corsPolicy");
 
 app.Run();
 

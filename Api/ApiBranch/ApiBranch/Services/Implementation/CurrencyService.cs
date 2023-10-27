@@ -14,6 +14,7 @@ namespace ApiBranch.Services.Implementation
             _dbContext = dbContext;
         }
 
+        //Devuelve Un listado de Monedas
         public async Task<List<CurrencyTest>> GetList()
         {
             try

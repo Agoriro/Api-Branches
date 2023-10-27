@@ -13,6 +13,7 @@ namespace ApiBranch.Services.Implementation
             _dbContext = dbContext;
         }
 
+        //Devuelve Listado de Sucursales
         public async Task<List<BranchTest>> GetList()
         {
             try
@@ -27,6 +28,8 @@ namespace ApiBranch.Services.Implementation
 
             }
         }
+
+        //Busca una sucursal por su Id
         public async Task<BranchTest> Get(int idBranch)
         {
             try
@@ -42,6 +45,8 @@ namespace ApiBranch.Services.Implementation
                 throw ex;
             }
         }
+
+        //Agrega una sucursal
         public async Task<BranchTest> Add(BranchTest branch)
         {
             try
@@ -56,6 +61,7 @@ namespace ApiBranch.Services.Implementation
             }
         }
 
+        //Actualiza una Sucursal
         public async Task<bool> Update(BranchTest branch)
         {
             try
@@ -70,6 +76,7 @@ namespace ApiBranch.Services.Implementation
             }
         }
 
+        //Elimina una sucursal
         public async Task<bool> Delete(BranchTest branch)
         {
             try
