@@ -16,7 +16,8 @@
 
         public string? BranchDateCreation { get; set; }
 
-        public string CurrencyName { get; set; }
+        public int? idCurrency { get; set; }
+        public string? CurrencyName { get; set; }
 
     }
 }

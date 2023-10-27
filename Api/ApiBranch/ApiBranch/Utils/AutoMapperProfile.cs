@@ -24,7 +24,7 @@ namespace ApiBranch.Utils
                 )
                 .ForMember(dest =>
                 dest.BranchDateCreation,
-                opt => opt.MapFrom(ori => ori.BranchDateCreation.ToString("dd/MM/tttt"))
+                opt => opt.MapFrom(ori => ori.BranchDateCreation.ToString("dd/MM/yyyy"))
                 );
 
             CreateMap<BranchMapper, BranchTest>()
