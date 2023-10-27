@@ -85,3 +85,5 @@ D:\Proyectos_WEB\Prueba_Quala\Api\ApiBranch\ApiBranch\obj\Debug\net6.0\refint\Ap
 D:\Proyectos_WEB\Prueba_Quala\Api\ApiBranch\ApiBranch\obj\Debug\net6.0\ApiBranch.pdb
 D:\Proyectos_WEB\Prueba_Quala\Api\ApiBranch\ApiBranch\obj\Debug\net6.0\ApiBranch.genruntimeconfig.cache
 D:\Proyectos_WEB\Prueba_Quala\Api\ApiBranch\ApiBranch\obj\Debug\net6.0\ref\ApiBranch.dll
+D:\Proyectos_WEB\Prueba_Quala\Api\ApiBranch\ApiBranch\bin\Debug\net6.0\AutoMapper.dll
+D:\Proyectos_WEB\Prueba_Quala\Api\ApiBranch\ApiBranch\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

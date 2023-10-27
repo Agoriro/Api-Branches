@@ -32,14 +32,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-#region Peticiones Api Rest
+#region Peticiones Api Rest Currency
+//Trae la lista de las monedas
 app.MapGet("/currency/list", async (
-    ICurrencyService _currencyServices
+    ICurrencyService _currencyServices,
+    IMapper _mapper
     ) =>
 {
     List<CurrencyTest> lstCurrency = await _currencyServices.GetList();
-    if (lstCurrency.Count > 0)
-        return Results.Ok(lstCurrency);
+    List<CurrencyMapper> lstCurrencyMapper = _mapper.Map<List<CurrencyMapper>>(lstCurrency);
+
+    if (lstCurrencyMapper.Count > 0)
+        return Results.Ok(lstCurrencyMapper);
     else
         return Results.NotFound();
 
@@ -47,6 +51,90 @@ app.MapGet("/currency/list", async (
 
 
 ) ;
+#endregion
+#region Peticiones Api Rest Branch
+//Trae el listado de las sucursales
+app.MapGet("/branches/list", async (
+    IBranchService _branchService,
+    IMapper _mapper
+    ) =>
+{
+    List<BranchTest> lstBranches = await _branchService.GetList();
+    List<BranchMapper> lstBranchesMapper = _mapper.Map<List<BranchMapper>>(lstBranches);
+
+    if (lstBranchesMapper.Count > 0)
+        return Results.Ok(lstBranchesMapper);
+    else
+        return Results.NotFound();
+});
+
+
+//Agrega una nueva sucursal
+app.MapPost("/branches/add", async (
+    BranchMapper model,
+    IBranchService _branchService,
+    IMapper _mapper
+    ) =>
+{
+    BranchTest branch = _mapper.Map<BranchTest>(model);
+    BranchTest branchCreate = await _branchService.Add(branch);
+    BranchMapper branchResult = _mapper.Map<BranchMapper>(branchCreate);
+
+    if (branchResult.IdBranch != 0)
+        return Results.Ok(branchResult);
+    else
+        return Results.StatusCode(StatusCodes.Status500InternalServerError);
+});
+
+
+//Actualiza una sucursal
+app.MapPut("/branches/update/{idBranch}", async (
+    int idBranch,
+    BranchMapper model,
+    IBranchService _branchService,
+    IMapper _mapper
+    ) =>
+{
+    BranchTest _encontrado = await _branchService.Get(idBranch);
+
+    if (_encontrado is null) return Results.NotFound();
+
+    BranchTest branch = _mapper.Map<BranchTest>(model);
+
+    _encontrado.BranchAddress = branch.BranchAddress;
+    _encontrado.BranchCode = branch.BranchCode;
+    _encontrado.BranchDateCreation = branch.BranchDateCreation;
+    _encontrado.BranchDescription = branch.BranchDescription;
+    _encontrado.BranchId = branch.BranchId;
+
+    var result = await _branchService.Update(_encontrado);
+
+    if (result)
+        return Results.Ok(_mapper.Map<BranchMapper>(_encontrado));
+    else
+        return Results.StatusCode(StatusCodes.Status500InternalServerError);
+
+});
+
+//Elimina una sucursal
+app.MapDelete("/branches/delete/{idBranch}", async (
+    int idBranch,
+    IBranchService _branchService
+    ) =>
+{
+    BranchTest _encontrado = await _branchService.Get(idBranch);
+
+    if (_encontrado is null) return Results.NotFound();
+
+    var result = await _branchService.Delete(_encontrado);
+
+    if (result)
+        return Results.Ok();
+    else
+        return Results.StatusCode(StatusCodes.Status500InternalServerError);
+
+});
+
 #endregion
 
 
