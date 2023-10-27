@@ -27,7 +27,22 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+#region Peticiones Api Rest
+app.MapGet("/currency/list", async (
+    ICurrencyService _currencyServices
+    ) =>
+{
+    List<CurrencyTest> lstCurrency = await _currencyServices.GetList();
+    if (lstCurrency.Count > 0)
+        return Results.Ok(lstCurrency);
+    else
+        return Results.NotFound();
 
+}
+
+
+) ;
+#endregion
 
 
 app.Run();
