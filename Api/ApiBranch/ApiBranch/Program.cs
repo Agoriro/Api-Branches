@@ -2,6 +2,9 @@ using ApiBranch.Models;
 using ApiBranch.Services.Contract;
 using ApiBranch.Services.Implementation;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using ApiBranch.Mappers;
+using ApiBranch.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +19,8 @@ builder.Services.AddDbContext<TestDbContext>(options => {
 
 builder.Services.AddScoped<ICurrencyService,CurrencyService>();
 builder.Services.AddScoped<IBranchService, BranchService>();
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 
 var app = builder.Build();
